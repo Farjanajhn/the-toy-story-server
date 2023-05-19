@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const sortBy = require('sort-by');
 require('dotenv').config()
 const app = express();
 const port = process.env.PORT || 4000;
@@ -29,16 +30,17 @@ async function run() {
 
 
  //get data
-    app.get('/products', async (req, res)=> {
+/*  app.get('/products', async (req, res)=> {
       const cursor = productCollection.find();
       const result = await cursor.toArray();
       res.send(result);
-    })
-
+    }) */
+ 
 
     //post data
     app.post('/addProduct', async (req, res) => {
       const body = req.body;
+     /*  body.createAt = new Price(); */
       const result = await productCollection.insertOne(body);
       res.send(result)
       console.log(result)
@@ -46,17 +48,26 @@ async function run() {
     
 
     //my toy
-    app.get('/products', async (req, res) => {
+   app.get('/products', async (req, res) => {
       console.log(req.query.email)
      let query = {}; 
       if (req.query?.email) {
         query = {email:req.query.email}
       } 
-      const cursor = productCollection.find(query);
+     const cursor = productCollection.find(query);
+  /*    sortBy({createAt:1}) */
       const result = await cursor.toArray();
        res.send(result); 
-/*       console.log(result); */
-     
+   /*  console.log(result);  */
+      
+   }) 
+    
+    app.delete('/products/:id', async(req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const result = await productCollection.deleteOne(query)
+      res.send(result);
+
     })
 
 
