@@ -28,12 +28,13 @@ async function run() {
     const productCollection = client.db('toyStory').collection('products');
 
 
-//get data
+ //get data
     app.get('/products', async (req, res)=> {
       const cursor = productCollection.find();
       const result = await cursor.toArray();
       res.send(result);
     })
+
 
     //post data
     app.post('/addProduct', async (req, res) => {
@@ -41,7 +42,22 @@ async function run() {
       const result = await productCollection.insertOne(body);
       res.send(result)
       console.log(result)
-})
+    })
+    
+
+    //my toy
+    app.get('/products', async (req, res) => {
+      console.log(req.query.email)
+     let query = {}; 
+      if (req.query?.email) {
+        query = {email:req.query.email}
+      } 
+      const cursor = productCollection.find(query);
+      const result = await cursor.toArray();
+       res.send(result); 
+/*       console.log(result); */
+     
+    })
 
 
 
