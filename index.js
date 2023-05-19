@@ -27,11 +27,23 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     const productCollection = client.db('toyStory').collection('products');
 
+
+//get data
     app.get('/products', async (req, res)=> {
       const cursor = productCollection.find();
       const result = await cursor.toArray();
       res.send(result);
     })
+
+    //post data
+    app.post('/addProduct', async (req, res) => {
+      const body = req.body;
+      const result = await productCollection.insertOne(body);
+      res.send(result)
+      console.log(result)
+})
+
+
 
     await client.connect();
     // Send a ping to confirm a successful connection
