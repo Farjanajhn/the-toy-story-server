@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-const sortBy = require('sort-by');
+
 require('dotenv').config()
 const app = express();
 const port = process.env.PORT || 4000;
@@ -30,12 +30,12 @@ async function run() {
 
 
  //get data
-/*  app.get('/products', async (req, res)=> {
+ app.get('/products', async (req, res)=> {
       const cursor = productCollection.find();
       const result = await cursor.toArray();
       res.send(result);
-    }) */
- 
+    })  
+     
 
     //post data
     app.post('/addProduct', async (req, res) => {
@@ -48,8 +48,8 @@ async function run() {
     
 
     //my toy
-   app.get('/products', async (req, res) => {
-      console.log(req.query.email)
+   app.get('/myProducts', async (req, res) => {
+     console.log(req.query.email) 
      let query = {}; 
       if (req.query?.email) {
         query = {email:req.query.email}
@@ -62,6 +62,24 @@ async function run() {
       
    }) 
     
+    app.put('/updateProducts/:id', async(req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) }
+      const options = { upsert: true };
+      const updatedToy = req.body;
+      const toy = {
+        $set: {
+          name: updatedToy.name, toyName: updatedToy.toyName,
+          price: updatedToy.price,
+          quantity: updatedToy.quantity,
+          category: updatedToy.category, rating:updatedToy.rating, photo:updatedToy.photo, description:updatedToy.description
+        }
+      }
+      const result = await productCollection.updateOne(filter, toy, options);
+      res.send(result);
+    })
+    
+ 
     app.delete('/products/:id', async(req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) }
@@ -69,6 +87,8 @@ async function run() {
       res.send(result);
 
     })
+
+
 
 
 
