@@ -62,6 +62,20 @@ async function run() {
       
    }) 
     
+    //data for single toy
+    app.get('/products/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const options = {
+        projection: { price:1,photo:1, toyName:1, name:1, email:1, rating:1, quantity:1,description:1}
+      }
+      const result = await productCollection.findOne(query,options);
+      res.send(result)
+    })
+
+
+    //updateProduct
+    
     app.put('/updateProducts/:id', async(req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) }
@@ -69,10 +83,10 @@ async function run() {
       const updatedToy = req.body;
       const toy = {
         $set: {
-          name: updatedToy.name, toyName: updatedToy.toyName,
+          
           price: updatedToy.price,
           quantity: updatedToy.quantity,
-          category: updatedToy.category, rating:updatedToy.rating, photo:updatedToy.photo, description:updatedToy.description
+       description:updatedToy.description
         }
       }
       const result = await productCollection.updateOne(filter, toy, options);
